@@ -2,14 +2,6 @@ From ubuntu:18.04
 
 RUN apt-get update && \
     apt install -y \
-        sudo \
-        openssh-server \
-        vim \
-        git \
-        curl \
-        wget \
-        tree \
-        zip \
         gcc \
         g++ \
         cmake \

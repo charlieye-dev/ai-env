@@ -3,6 +3,12 @@ TF_GPU_IMAGE := ubuntu:18.04-tf-gpu
 
 include cuda.mk
 
+ifdef AUTO_VIM
+	AUTO_VIM_ := $(AUTO_VIM)
+else
+	AUTO_VIM_ := ""
+endif
+
 all: build-tf-gpu
 
 .PHONY: build-cuda-image
@@ -44,10 +50,8 @@ build-tf-gpu: build-cuda-image
 	  -f docker/Dockerfile \
 	  -t $(TF_GPU_IMAGE) \
 	  --build-arg BASE_IMG=$(CUDA_IMAGE) \
-	  --build-arg http_proxy=http://192.168.100.200:3128 \
-	  --build-arg https_proxy=http://192.168.100.200:3128 \
+	  --build-arg AUTO_VIM=$(AUTO_VIM_) \
 	  .
-	docker rmi $(CUDA_IMAGE) $(CUDA_IMAGE)-toolkit
 
 .PHONY: clean
 	rm -f cuda_*.run
