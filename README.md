@@ -10,27 +10,29 @@ make <TARGET> <ARG>=1 ...
 
 | Target | Image | Description |
 |--------|-------|-------------|
-| build-tf-gpu | ubuntu:18.04-tf-gpu | Build a docker image with tensorflow and cuda environment. |
+| build-ai-gpu | ubuntu:18.04-ai-gpu | Build a docker image with tensorflow & pytorch & cuda environment. |
 
 **ARG** are supported following,
 
 | Argument | Description |
 |----------|-------------|
 | DOWNLOAD_CUDA | Download cuda when build image |
+| MMDET | Install [MMDetection](https://mmdetection.readthedocs.io/zh_CN/latest/get_started.html) |
 | AUTO_VIM | Configure [autoVim](https://github.com/yechenglin-dev/autoVim) in image |
+| CHINA | Configure [china](https://github.com/yechenglin-dev/china-source.git) source list for apt & pip |
 
 ## Usage
 
 Run a image,
 
 ```
-docker run -d -v /lib/modules:/libmodules --privileged --name -p 999:22 tf <IMAGE>
+docker run -d -v /lib/modules:/libmodules --privileged --name -p 999:22 ai <IMAGE>
 ```
 
 Login container via ssh,
 
 ```
-ssh -p 999 tf@localhost
+ssh -p 999 ai@localhost
 ```
 
 > Password is **testpass**.

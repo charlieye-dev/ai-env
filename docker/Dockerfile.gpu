@@ -1,0 +1,102 @@
+ARG BASE_IMG
+FROM $BASE_IMG
+
+ARG CHINA
+ARG MMDET
+
+RUN if [ ! x$CHINA = x"" ]; then \
+        mv /etc/apt/sources.list /etc/apt/sources.list.bak; \
+        echo 'deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse\n\
+deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse\n\
+\n\
+deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse\n\
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse\n\
+\n\
+deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse\n\
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse\n\
+\n\
+deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse\n\
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse\n\
+\n\
+deb http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse\n\
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse' > /etc/apt/sources.list; \
+    fi && \
+    apt-get update && \
+    apt install -y \
+        sudo \
+        openssh-server \
+        vim \
+        git \
+        curl \
+        wget \
+        tree \
+        zip \
+        ctags \
+        ack
+
+# Add user 'ai'
+RUN useradd -rm -s /bin/bash -g root -G sudo -u 1000 ai && \
+    echo 'ai:testpass' | chpasswd
+
+USER ai
+WORKDIR /home/ai
+
+# Configure anaconda
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /home/ai/miniconda && \
+    eval "$(/home/ai/miniconda/bin/conda shell.bash hook)" && \
+    conda init && \
+    rm -f Miniconda3-latest-Linux-x86_64.sh
+
+# Create python3.7 environment
+RUN eval "$(/home/ai/miniconda/bin/conda shell.bash hook)" && \
+    conda create -n py3.7 python=3.7 -y && \
+    conda activate py3.7 && \
+    if [ ! x$CHINA = x"" ]; then \
+        mkdir -p .pip; \
+        echo '[global]\n\
+index-url=http://mirrors.aliyun.com/pypi/simple\n\
+trusted-host=mirrors.aliyun.com' > .pip/pip.conf; \
+    fi && \
+    conda install tensorflow-gpu && \
+    pip3 install torch \
+                 torchvision \
+                 torchaudio \
+                 jupyterlab \
+                 pandas \
+                 matplotlib \
+                 scikit-learn \
+                 pillow && \
+    if [ ! x$MMDET = x"" ]; then \
+        pip3 install openmim; \
+        mim install mmdet; \
+    fi
+
+# Set default environment
+RUN echo '\nexport PATH=/usr/local/cuda/bin:$PATH\n\
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64\n\
+\n\
+conda activate py3.7' >> .bashrc
+
+# Config autoVim
+ARG AUTO_VIM
+RUN if [ ! x$AUTO_VIM = x"" ]; then \
+        wget https://raw.githubusercontent.com/yechenglin-dev/autovim/master/install.sh && \
+        bash install.sh && \
+        rm -f install.sh; \
+    fi
+
+
+# Configure jupyter-lab
+RUN echo '# Start jupyter-lab server\n\
+jupyter-lab --ip 0.0.0.0 --no-browser >/dev/null 2>&1 &\n\
+sleep 1\n\
+jupyter-lab list' > run-jupyter.sh
+
+USER root
+
+# Configure sshd
+RUN service ssh start
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd","-D"]

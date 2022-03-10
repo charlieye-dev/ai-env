@@ -1,5 +1,5 @@
 CUDA_IMAGE   := ubuntu:18.04-cuda
-TF_GPU_IMAGE := ubuntu:18.04-tf-gpu
+GPU_IMAGE := ubuntu:18.04-ai-gpu
 
 include cuda.mk
 
@@ -9,7 +9,19 @@ else
 	AUTO_VIM_ := ""
 endif
 
-all: build-tf-gpu
+ifdef MMDET
+	MMDET_ := $(MMDET)
+else
+	MMDET_ := ""
+endif
+
+ifdef CHINA
+	CHINA_ := $(CHINA)
+else
+	CHINA_ := ""
+endif
+
+all: build-cuda-image build-ai-gpu
 
 .PHONY: build-cuda-image
 ifdef DOWNLOAD_CUDA
@@ -28,8 +40,6 @@ install-toolkit:
 	  -f docker/Dockerfile.cuda \
 	  -t $(CUDA_IMAGE)-toolkit \
 	  --build-arg CUDA_INSTALLER=cuda_10.2.89_440.33.01_linux.run \
-	  --build-arg http_proxy=http://192.168.100.200:3128 \
-	  --build-arg https_proxy=http://192.168.100.200:3128 \
 	  .
 
 .PHONY: install-driver
@@ -44,13 +54,15 @@ install-driver:
 	docker commit cuda-container-tmp_ $(CUDA_IMAGE)
 	docker rm -f cuda-container-tmp_
 
-.PHONY: build-tf-gpu
-build-tf-gpu: build-cuda-image
+.PHONY: build-ai-gpu
+build-ai-gpu:
 	docker build \
-	  -f docker/Dockerfile \
-	  -t $(TF_GPU_IMAGE) \
+	  -f docker/Dockerfile.gpu \
+	  -t $(GPU_IMAGE) \
 	  --build-arg BASE_IMG=$(CUDA_IMAGE) \
 	  --build-arg AUTO_VIM=$(AUTO_VIM_) \
+	  --build-arg MMDET=$(MMDET_) \
+	  --build-arg CHINA=$(CHINA_) \
 	  .
 
 .PHONY: clean
