@@ -10,6 +10,7 @@ make <TARGET> <ARG>=1 ...
 
 | Target | Image | Description |
 |--------|-------|-------------|
+| build-ai-cpu | ubuntu:18.04-ai-cpu | Build a docker image with tensorflow & pytorch environment. |
 | build-ai-gpu | ubuntu:18.04-ai-gpu | Build a docker image with tensorflow & pytorch & cuda environment. |
 
 **ARG** are supported following,

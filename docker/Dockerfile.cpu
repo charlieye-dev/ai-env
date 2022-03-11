@@ -1,5 +1,4 @@
-ARG BASE_IMG
-FROM $BASE_IMG
+FROM ubuntu:18.04
 
 ARG CHINA
 
@@ -57,8 +56,8 @@ RUN eval "$(/home/ai/miniconda/bin/conda shell.bash hook)" && \
 index-url=http://mirrors.aliyun.com/pypi/simple\n\
 trusted-host=mirrors.aliyun.com' > .pip/pip.conf; \
     fi && \
-    conda install tensorflow-gpu && \
-    pip3 install torch \
+    pip3 install tensorflow \
+                 torch \
                  torchvision \
                  torchaudio \
                  jupyterlab \

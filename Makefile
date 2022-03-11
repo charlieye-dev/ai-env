@@ -1,5 +1,6 @@
 CUDA_IMAGE   := ubuntu:18.04-cuda
 GPU_IMAGE := ubuntu:18.04-ai-gpu
+CPU_IMAGE := ubuntu:18.04-ai-cpu
 
 include cuda.mk
 
@@ -54,6 +55,15 @@ build-ai-gpu:
 	  -f docker/Dockerfile.gpu \
 	  -t $(GPU_IMAGE) \
 	  --build-arg BASE_IMG=$(CUDA_IMAGE) \
+	  --build-arg AUTO_VIM=$(AUTO_VIM_) \
+	  --build-arg CHINA=$(CHINA_) \
+	  .
+
+.PHONY: build-ai-cpu
+build-ai-cpu:
+	docker build \
+	  -f docker/Dockerfile.cpu \
+	  -t $(GPU_IMAGE) \
 	  --build-arg AUTO_VIM=$(AUTO_VIM_) \
 	  --build-arg CHINA=$(CHINA_) \
 	  .
