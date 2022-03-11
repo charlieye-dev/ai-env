@@ -66,11 +66,7 @@ trusted-host=mirrors.aliyun.com' > .pip/pip.conf; \
                  pandas \
                  matplotlib \
                  scikit-learn \
-                 pillow && \
-    if [ ! x$MMDET = x"" ]; then \
-        pip3 install openmim; \
-        mim install mmdet; \
-    fi
+                 pillow
 
 # Set default environment
 RUN echo '\nexport PATH=/usr/local/cuda/bin:$PATH\n\

@@ -9,12 +9,6 @@ else
 	AUTO_VIM_ := ""
 endif
 
-ifdef MMDET
-	MMDET_ := $(MMDET)
-else
-	MMDET_ := ""
-endif
-
 ifdef CHINA
 	CHINA_ := $(CHINA)
 else
@@ -61,7 +55,6 @@ build-ai-gpu:
 	  -t $(GPU_IMAGE) \
 	  --build-arg BASE_IMG=$(CUDA_IMAGE) \
 	  --build-arg AUTO_VIM=$(AUTO_VIM_) \
-	  --build-arg MMDET=$(MMDET_) \
 	  --build-arg CHINA=$(CHINA_) \
 	  .
 

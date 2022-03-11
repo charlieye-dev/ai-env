@@ -17,7 +17,6 @@ make <TARGET> <ARG>=1 ...
 | Argument | Description |
 |----------|-------------|
 | DOWNLOAD_CUDA | Download cuda when build image |
-| MMDET | Install [MMDetection](https://mmdetection.readthedocs.io/zh_CN/latest/get_started.html) |
 | AUTO_VIM | Configure [autoVim](https://github.com/yechenglin-dev/autoVim) in image |
 | CHINA | Configure [china](https://github.com/yechenglin-dev/china-source.git) source list for apt & pip |
 
