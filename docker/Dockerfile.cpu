@@ -33,6 +33,10 @@ deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted univer
         tree \
         zip \
         ctags \
+        gcc \
+        g++ \
+        cmake \
+        make \
         ack
 
 # Add user 'ai'
