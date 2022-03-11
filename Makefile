@@ -63,7 +63,7 @@ build-ai-gpu:
 build-ai-cpu:
 	docker build \
 	  -f docker/Dockerfile.cpu \
-	  -t $(GPU_IMAGE) \
+	  -t $(CPU_IMAGE) \
 	  --build-arg AUTO_VIM=$(AUTO_VIM_) \
 	  --build-arg CHINA=$(CHINA_) \
 	  .
